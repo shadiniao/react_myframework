@@ -1,6 +1,6 @@
 ## 开发环境
-1.先在vscode 中安装 eslint, prettier now 两个插件
-2.进入用户设置进行配置
+1. 先在vscode 中安装 eslint, prettier now 两个插件
+2. 进入用户设置进行配置
 ```json
 "eslint.options": {
     "configFile" : "E:/developer/work_test/xxx/.eslintrc"
