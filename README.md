@@ -11,5 +11,10 @@
 "prettier.jsonEnable": [
     "json"
 ],
+"files.eol": "\n",
 ```
 configFile中配置你.eslintrc的所在位置
+
+prettier是按照.prettierrc文件中的配置来的
+
+files.eol设置是将页面行尾字符从CRLF变成LF
