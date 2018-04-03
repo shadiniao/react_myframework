@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-export async function query(params) {
+export async function query() {
     return request(`http://localhost:3000/book`);
 }
 
