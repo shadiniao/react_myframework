@@ -92,7 +92,7 @@ export const getRouterData = app => {
     '/book/list-book': {
       component: dynamicWrapper(app, ['book'], () => import('../routes/Book/ListBook')),
     },
-    '/book/edit-book': {
+    '/book/edit-book/:id': {
       component: dynamicWrapper(app, ['book'], () => import('../routes/Book/EditBook')),
     },
     '/form/basic-form': {

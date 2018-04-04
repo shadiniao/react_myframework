@@ -12,9 +12,13 @@
     "json"
 ],
 "files.eol": "\n",
+"javascript.implicitProjectConfig.experimentalDecorators": true,
+"editor.tabSize": 2,
 ```
 configFile中配置你.eslintrc的所在位置
 
 prettier是按照.prettierrc文件中的配置来的
 
 files.eol设置是将页面行尾字符从CRLF变成LF
+
+[vscode中关于prettier的配置](https://negivup.github.io/2018/cjclb16bp000bnb2gd114ecsh.html)
