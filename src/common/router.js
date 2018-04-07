@@ -92,6 +92,12 @@ export const getRouterData = app => {
     '/book/list-book': {
       component: dynamicWrapper(app, ['book'], () => import('../routes/Book/ListBook')),
     },
+    '/book/list-book2': {
+      component: dynamicWrapper(app, ['book'], () => import('../routes/Book/ListBook2')),
+    },
+    '/book/add-book': {
+      component: dynamicWrapper(app, ['book'], () => import('../routes/Book/EditBook')),
+    },
     '/book/edit-book/:id': {
       component: dynamicWrapper(app, ['book'], () => import('../routes/Book/EditBook')),
     },
@@ -170,6 +176,9 @@ export const getRouterData = app => {
     },
     '/user/login': {
       component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
+    },
+    '/user/mylogin': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/User/MyLogin')),
     },
     '/user/register': {
       component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),

@@ -1,22 +1,23 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import { Form, Button, Divider, Table, Card } from 'antd';
+import { Form, Button, Divider, Table, Card, Popconfirm } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import ModalBook from './ModalBook';
 
 // import styles from './TableList.less';
 
 @connect(({ book, loading }) => ({ book, loading: loading.models.book }))
 @Form.create()
 export default class ListBook extends Component {
-  toAdd() {
+  edit(values) {
+    const { id } = values;
     const { dispatch } = this.props;
-    dispatch(routerRedux.push(`/book/add-book`));
-  }
-
-  toEdit(book) {
-    const { dispatch } = this.props;
-    dispatch(routerRedux.push(`/book/edit-book/${book.id}`));
+    let type = 'book/add';
+    if (id) {
+      type = 'book/update';
+    }
+    dispatch({ type, data: values });
   }
 
   remove(book) {
@@ -25,7 +26,7 @@ export default class ListBook extends Component {
   }
 
   render() {
-    const { book: { list = {} } = {} } = this.props;
+    const { loading, book: { list = {} } = {} } = this.props;
     const columns = [
       {
         title: 'id',
@@ -41,16 +42,18 @@ export default class ListBook extends Component {
         sorter: true,
         align: 'right',
         render: val => `${val} 万`,
-        // mark to display a total number
-        needTotal: true,
       },
       {
         title: '操作',
         render: (text, record) => (
           <Fragment>
-            <Button type="primary" ghost onClick={this.toEdit.bind(this, record)} icon="edit" />
+            <ModalBook onOk={this.edit.bind(this)} dataId={record.id}>
+              <Button type="primary" ghost icon="edit" />
+            </ModalBook>
             <Divider type="vertical" />
-            <Button type="primary" ghost onClick={this.remove.bind(this, record)} icon="delete" />
+            <Popconfirm title="确定要删除该条数据吗?" onConfirm={this.remove.bind(this, record)}>
+              <Button type="primary" ghost icon="delete" />
+            </Popconfirm>
           </Fragment>
         ),
       },
@@ -59,16 +62,13 @@ export default class ListBook extends Component {
       <PageHeaderLayout title="图书管理">
         <Card bordered={false}>
           <div>
-            <Button
-              icon="plus"
-              type="primary"
-              style={{ marginBottom: 24 }}
-              onClick={this.toAdd.bind(this)}
-            >
-              新建
-            </Button>
+            <ModalBook onOk={this.edit.bind(this)}>
+              <Button icon="plus" type="primary" style={{ marginBottom: 24 }}>
+                新建
+              </Button>
+            </ModalBook>
           </div>
-          <Table rowKey="id" dataSource={list} columns={columns} />
+          <Table rowKey="id" dataSource={list} columns={columns} loading={loading} />
         </Card>
       </PageHeaderLayout>
     );

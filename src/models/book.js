@@ -1,74 +1,84 @@
-import { query, update, getBook, remove } from '../services/book';
+import pathToRegexp from 'path-to-regexp';
+import { query, add, update, getBook, remove } from '../services/book';
 
 export default {
-	namespace: 'book',
+  namespace: 'book',
 
-	state: {
-		list: [],
-		editTarget: null,
-	},
+  state: {
+    list: [],
+    editTarget: {},
+    isEdit: false,
+  },
 
-	subscriptions: {
-		setup({ dispatch, history }) {
-			history.listen((location) => {
-				switch (location.pathname) {
-					case '/book/list-book':
-						dispatch({
-							type: 'book/fetch',
-							payload: {},
-						});
-						break;
-					default:
-						break;
-				}
-			});
-		},
-	},
+  reducers: {
+    setList(state, action) {
+      return {
+        ...state,
+        list: action.payload,
+      };
+    },
+    setEditTarget(state, action) {
+      return {
+        ...state,
+        editTarget: action.payload,
+      };
+    },
+  },
 
-	effects: {
-		*fetch({ payload }, { call, put }) {
-			const response = yield call(query, payload);
-			yield put({
-				type: 'setList',
-				payload: Array.isArray(response) ? response : [],
-			});
-		},
+  effects: {
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(query, payload);
+      yield put({
+        type: 'setList',
+        payload: Array.isArray(response) ? response : [],
+      });
+    },
 
-		*update({ data }, { call, put }) {
-			const response = yield call(update, data);
-			console.log(response);
-			// yield put({
-			// 	type: 'queryList',
-			// 	payload: Array.isArray(response) ? response : [],
-			// });
-		},
+    *add({ data }, { call, put }) {
+      yield call(add, data);
+      yield put({
+        type: 'fetch',
+        payload: {},
+      });
+    },
 
-		*getBook({ id }, { call, put }) {
-			const response = yield call(getBook, id);
-			yield put({
-				type: 'setEditTarget',
-				payload: response,
-			});
-		},
+    *update({ data }, { call, put }) {
+      yield call(update, data);
+      yield put({
+        type: 'fetch',
+        payload: {},
+      });
+    },
 
-		*remove({ id }, { call, put }) {
-			yield call(remove, id);
-			yield put({ type: 'fetch' });
-		},
-	},
+    *getBook({ id }, { call, put }) {
+      const result = yield call(getBook, id);
+      yield put({
+        type: 'setEditTarget',
+        payload: result,
+      });
+    },
 
-	reducers: {
-		setList(state, action) {
-			return {
-				...state,
-				list: action.payload,
-			};
-		},
-		setEditTarget(state, action) {
-			return {
-				...state,
-				editTarget: action.payload,
-			};
-		},
-	},
+    *remove({ id }, { call, put }) {
+      yield call(remove, id);
+      yield put({ type: 'fetch' });
+    },
+  },
+
+  subscriptions: {
+    setup({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname.startsWith('/book/list-book')) {
+          dispatch({ type: 'fetch', payload: {} });
+        } else if (pathname.startsWith('/book/edit-book') > -1) {
+          const match = pathToRegexp('/book/edit-book/:id').exec(pathname);
+          if (match) {
+            const id = match[1];
+            dispatch({ type: 'getBook', id });
+          } else {
+            dispatch({ type: 'setEditTarget', payload: {} });
+          }
+        }
+      });
+    },
+  },
 };

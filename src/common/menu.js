@@ -167,6 +167,10 @@ const menuData = [
         name: '图书列表',
         path: 'list-book',
       },
+      {
+        name: '图书列表(弹出框)',
+        path: 'list-book2',
+      },
     ],
   },
 ];
