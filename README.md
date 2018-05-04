@@ -14,6 +14,7 @@
 "files.eol": "\n",
 "javascript.implicitProjectConfig.experimentalDecorators": true,
 "editor.tabSize": 2,
+"emmet.triggerExpansionOnTab": true,
 ```
 configFile中配置你.eslintrc的所在位置
 

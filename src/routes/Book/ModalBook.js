@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Card, Modal, Input, InputNumber } from 'antd';
+import { Form, Modal, Input, InputNumber } from 'antd';
 
 const { Item: FormItem } = Form;
 

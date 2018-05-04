@@ -6,9 +6,9 @@ import styles from './Login.less';
 
 const { Tab, UserName, Password, Submit } = Login;
 
-@connect(({ login, loading }) => ({
-  login,
-  submitting: loading.effects['login/login'],
+@connect(({ mylogin, loading }) => ({
+  login: mylogin,
+  submitting: loading.effects['mylogin/login'],
 }))
 export default class LoginPage extends Component {
   state = {
@@ -24,7 +24,7 @@ export default class LoginPage extends Component {
     const { type } = this.state;
     if (!err) {
       this.props.dispatch({
-        type: 'login/login',
+        type: 'mylogin/login',
         payload: {
           ...values,
           type,
@@ -50,10 +50,7 @@ export default class LoginPage extends Component {
       <div className={styles.main}>
         <Login defaultActiveKey={type} onTabChange={this.onTabChange} onSubmit={this.handleSubmit}>
           <Tab key="account" tab="账户密码登录">
-            {login.status === 'error' &&
-              login.type === 'account' &&
-              !login.submitting &&
-              this.renderMessage('账户或密码错误')}
+            {login.error && !login.submitting && this.renderMessage(login.msg)}
             <UserName name="userName" placeholder="请输入账号" />
             <Password name="password" placeholder="请输入密码" />
           </Tab>

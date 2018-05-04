@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteProps } from 'react-router';
 
-type authorityFN = (currentAuthority?: string) => boolean;
+type authorityFN = (currentAuthority?: string[]) => boolean;
 
 type authority = string | Array<string> | authorityFN | Promise<any>;
 
@@ -38,6 +38,6 @@ export class Authorized extends React.Component<AuthorizedProps, any> {
   static check: check;
 }
 
-declare function renderAuthorize(currentAuthority: string): typeof Authorized;
+declare function renderAuthorize(currentAuthority: string[]): typeof Authorized;
 
 export default renderAuthorize;

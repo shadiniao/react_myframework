@@ -77,3 +77,11 @@ export async function fakeRegister(params) {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function getRealData(type) {
+  let url = 'http://192.168.50.211:3000/data/';
+  if (type) {
+    url += type;
+  }
+  return request(url);
+}

@@ -6,6 +6,8 @@ import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
 import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
+import * as login from './mock/login';
+import * as realtime from './mock/realtime';
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -73,11 +75,12 @@ const proxy = {
   'GET /api/profile/advanced': getProfileAdvancedData,
   'POST /api/login/account': (req, res) => {
     const { password, userName, type } = req.body;
+    console.log(req.body);
     if (password === '888888' && userName === 'admin') {
       res.send({
         status: 'ok',
         type,
-        currentAuthority: 'admin',
+        currentAuthority: ['admin'],
       });
       return;
     }
@@ -85,14 +88,14 @@ const proxy = {
       res.send({
         status: 'ok',
         type,
-        currentAuthority: 'user',
+        currentAuthority: ['user'],
       });
       return;
     }
     res.send({
       status: 'error',
       type,
-      currentAuthority: 'guest',
+      currentAuthority: ['guest'],
     });
   },
   'POST /api/register': (req, res) => {
@@ -135,6 +138,18 @@ const proxy = {
       path: '/base/category/list',
     });
   },
+
+  // 'POST /api/login': login.login,
+  // 'POST /api/me': login.me,
+  // 'POST /api/permission': login.permission,
+
+  'POST /ykapi/(.*)': 'http://192.168.50.236:9595/',
+  'GET /api/acc': realtime.queryACC,
+  'POST /api/acc': realtime.addACC,
+  'PUT /api/acc/:id': realtime.uptACC,
+  'GET /api/acc/:id': realtime.getACC,
+  'DELETE /api/acc/:id': realtime.delACC,
+  // 'POST /api/acc/account': realtime.addACC,
 };
 
 export default (noProxy ? {} : delay(proxy, 1000));

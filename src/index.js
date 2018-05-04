@@ -8,8 +8,8 @@ import createHistory from 'history/createHashHistory';
 import createLoading from 'dva-loading';
 import 'moment/locale/zh-cn';
 import './rollbar';
-
 import './index.less';
+
 // 1. Initialize
 const app = dva({
   history: createHistory(),

@@ -150,17 +150,47 @@ class BasicLayout extends React.PureComponent {
       payload: type,
     });
   };
+
   handleMenuClick = ({ key }) => {
-    if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
-      return;
-    }
-    if (key === 'logout') {
-      this.props.dispatch({
-        type: 'login/logout',
-      });
+    switch (key) {
+      case 'triggerError':
+        this.props.dispatch(routerRedux.push('/exception/trigger'));
+        break;
+      case 'logout':
+        this.props.dispatch({ type: 'login/logout' });
+        break;
+      case 'index':
+        this.props.dispatch(routerRedux.push('/index'));
+        break;
+      case 'realtime':
+        this.props.dispatch(routerRedux.push('/rcontrol/realtime'));
+        break;
+      case 'alarm-event':
+        this.props.dispatch(routerRedux.push('/rcontrol/alarm-event'));
+        break;
+      case 'alarm-message':
+        this.props.dispatch(routerRedux.push('/rcontrol/alarm-message'));
+        break;
+      case 'alarm-config':
+        this.props.dispatch(routerRedux.push('/rcontrol/alarm-config'));
+        break;
+      case 'auto-control-config':
+        this.props.dispatch(routerRedux.push('/rcontrol/auto-control-config'));
+        break;
+      case 'realtime-analysis':
+        this.props.dispatch(routerRedux.push('/rcontrol/realtime-analysis'));
+        break;
+      default:
+        break;
     }
   };
+
+  handleCompanyChange = ({ key }) => {
+    const { mapCompany } = this.props;
+
+    this.props.dispatch({ type: 'user/saveCurrentCompany', payload: mapCompany[key] });
+  };
+
   handleNoticeVisibleChange = visible => {
     if (visible) {
       this.props.dispatch({
@@ -177,6 +207,7 @@ class BasicLayout extends React.PureComponent {
       routerData,
       match,
       location,
+      currentCompany,
     } = this.props;
     const bashRedirect = this.getBashRedirect();
     const layout = (
@@ -192,12 +223,14 @@ class BasicLayout extends React.PureComponent {
           location={location}
           isMobile={this.state.isMobile}
           onCollapse={this.handleMenuCollapse}
+          currentUser={currentUser}
         />
         <Layout>
           <Header style={{ padding: 0 }}>
             <GlobalHeader
               logo={logo}
               currentUser={currentUser}
+              currentCompany={currentCompany}
               fetchingNotices={fetchingNotices}
               notices={notices}
               collapsed={collapsed}
@@ -205,7 +238,9 @@ class BasicLayout extends React.PureComponent {
               onNoticeClear={this.handleNoticeClear}
               onCollapse={this.handleMenuCollapse}
               onMenuClick={this.handleMenuClick}
+              onCompanyChange={this.handleCompanyChange}
               onNoticeVisibleChange={this.handleNoticeVisibleChange}
+              pathname={location.pathname}
             />
           </Header>
           <Content style={{ margin: '24px 24px 0', height: '100%' }}>
@@ -272,6 +307,8 @@ class BasicLayout extends React.PureComponent {
 
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
+  currentCompany: user.currentCompany,
+  mapCompany: user.mapCompany,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,

@@ -14,7 +14,7 @@ function isPromise(obj) {
  * 通用权限检查方法
  * Common check permissions method
  * @param { 权限判定 Permission judgment type string |array | Promise | Function } authority
- * @param { 你的权限 Your permission description  type:string} currentAuthority
+ * @param { 你的权限 Your permission description  type:string[]} currentAuthority
  * @param { 通过的组件 Passing components } target
  * @param { 未通过的组件 no pass components } Exception
  */
@@ -26,17 +26,31 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
   }
   // 数组处理
   if (Array.isArray(authority)) {
-    if (authority.indexOf(currentAuthority) >= 0) {
+    // 判断authority里的权限是否在currentAuthority里中存在,这里就是取交集
+    const intersect = [...currentAuthority].filter(x => authority.includes(x));
+
+    if (intersect && intersect.length > 0) {
       return target;
     }
+
+    // if (authority.indexOf(currentAuthority) >= 0) {
+    // 	return target;
+    // }
     return Exception;
   }
 
   // string 处理
   if (typeof authority === 'string') {
-    if (authority === currentAuthority) {
+    // 判断authority权限是否存在于currentAuthority集合中
+    const find = currentAuthority.find(element => element === authority);
+
+    if (find) {
       return target;
     }
+
+    // if (authority === currentAuthority) {
+    // 	return target;
+    // }
     return Exception;
   }
 

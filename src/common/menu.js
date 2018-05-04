@@ -11,6 +11,10 @@ const menuData = [
         path: 'analysis',
       },
       {
+        name: 'my分析页',
+        path: 'my-analysis',
+      },
+      {
         name: '监控页',
         path: 'monitor',
       },

@@ -12,7 +12,7 @@ Authorized.check = check;
 
 /**
  * use  authority or getAuthority
- * @param {string|()=>String} currentAuthority
+ * @param {string[]|()=>String} currentAuthority
  */
 const renderAuthorize = currentAuthority => {
   if (currentAuthority) {
@@ -20,10 +20,15 @@ const renderAuthorize = currentAuthority => {
       CURRENT = currentAuthority();
     }
     if (currentAuthority.constructor.name === 'String') {
+      // CURRENT = currentAuthority;
+      CURRENT = [currentAuthority];
+    }
+    if (currentAuthority.constructor.name === 'Array') {
       CURRENT = currentAuthority;
     }
   } else {
-    CURRENT = 'NULL';
+    // CURRENT = ['NULL'];
+    CURRENT = [];
   }
   return Authorized;
 };

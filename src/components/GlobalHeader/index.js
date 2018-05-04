@@ -55,6 +55,15 @@ export default class GlobalHeader extends PureComponent {
     event.initEvent('resize', true, false);
     window.dispatchEvent(event);
   }
+
+  switchMenu({ item, key }) {
+    const { onMenuClick } = this.props;
+    this.setState({
+      selectMenu: key,
+    });
+    onMenuClick({ key });
+  }
+
   render() {
     const {
       currentUser,
@@ -65,7 +74,12 @@ export default class GlobalHeader extends PureComponent {
       onNoticeVisibleChange,
       onMenuClick,
       onNoticeClear,
+      currentCompany,
+      onCompanyChange,
+      pathname,
     } = this.props;
+    const { companies = [] } = currentUser;
+    const menuKey = pathname.slice(pathname.lastIndexOf('/') + 1);
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item disabled>
@@ -83,6 +97,20 @@ export default class GlobalHeader extends PureComponent {
         </Menu.Item>
       </Menu>
     );
+    const menuStation =
+      companies && companies.length > 1 ? (
+        <Menu selectedKeys={[]} onClick={onCompanyChange}>
+          {companies.map(company => {
+            return (
+              <Menu.Item key={company.pid} disabled={company.pid === currentCompany.pid}>
+                切换到:{company.companyName}
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      ) : (
+        <div />
+      );
     const noticeData = this.getNoticeData();
     return (
       <div className={styles.header}>
@@ -92,12 +120,66 @@ export default class GlobalHeader extends PureComponent {
           </Link>,
           <Divider type="vertical" key="line" />,
         ]}
-        <Icon
-          className={styles.trigger}
-          type={collapsed ? 'menu-unfold' : 'menu-fold'}
-          onClick={this.toggle}
-        />
+        {currentUser.usertype === 'system' && (
+          <div style={{ display: 'inline-block', lineHeight: '64px' }}>
+            <Icon
+              className={styles.trigger}
+              type={collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+          </div>
+        )}
+        <div style={{ width: '700px', lineHeight: '64px', display: 'inline-block' }}>
+          <Menu
+            style={{ lineHeight: '64px' }}
+            onClick={this.switchMenu.bind(this)}
+            selectedKeys={[menuKey]}
+            mode="horizontal"
+          >
+            <Menu.Item key="index">
+              <Icon type="appstore" />首页
+            </Menu.Item>
+            <Menu.Item key="realtime">
+              <Icon type="dashboard" />实时图
+            </Menu.Item>
+            <Menu.Item key="realtime-analysis">
+              <Icon type="area-chart" />实时曲线
+            </Menu.Item>
+            <Menu.Item key="alarm-event">
+              <Icon type="notification" />事件
+            </Menu.Item>
+            <Menu.SubMenu
+              title={
+                <span>
+                  <Icon type="warning" />告警
+                </span>
+              }
+            >
+              <Menu.Item key="alarm-message">告警历史</Menu.Item>
+              <Menu.Item key="alarm-config">告警配置</Menu.Item>
+            </Menu.SubMenu>
+
+            <Menu.Item key="auto-control-config">
+              <Icon type="bar-chart" />控制配置
+            </Menu.Item>
+          </Menu>
+        </div>
         <div className={styles.right}>
+          {currentUser.name ? (
+            <Dropdown overlay={menuStation}>
+              <span className={`${styles.action} ${styles.account}`}>
+                <Avatar
+                  icon="shop"
+                  size="small"
+                  style={{ backgroundColor: '#87d068' }}
+                  className={styles.avatar}
+                />
+                <span className={styles.name}>{currentCompany.companyName}</span>
+              </span>
+            </Dropdown>
+          ) : (
+            <Spin size="small" style={{ marginLeft: 8 }} />
+          )}
           <HeaderSearch
             className={`${styles.action} ${styles.search}`}
             placeholder="站内搜索"
@@ -152,7 +234,12 @@ export default class GlobalHeader extends PureComponent {
           {currentUser.name ? (
             <Dropdown overlay={menu}>
               <span className={`${styles.action} ${styles.account}`}>
-                <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
+                <Avatar
+                  size="small"
+                  className={styles.avatar}
+                  style={{ backgroundColor: '#87d068' }}
+                  icon="user"
+                />
                 <span className={styles.name}>{currentUser.name}</span>
               </span>
             </Dropdown>

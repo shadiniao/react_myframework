@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Input, DatePicker, Select, Button, Card, InputNumber } from 'antd';
+import { Form, Input, Button, Card, InputNumber } from 'antd';
 import { routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
 @connect(({ book, loading }) => ({ book, loading: loading.models.book }))
 @Form.create()
@@ -43,7 +40,7 @@ export default class EditBook extends Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
         xs: {

@@ -3,8 +3,13 @@ import React from 'react';
 import DrawerMenu from 'rc-drawer-menu';
 import SiderMenu from './SiderMenu';
 
-export default props =>
-  props.isMobile ? (
+export default props => {
+  const { currentUser } = props;
+  if (!currentUser || currentUser.usertype !== 'system') {
+    return null;
+  }
+
+  return props.isMobile ? (
     <DrawerMenu
       parent={null}
       level={null}
@@ -20,3 +25,4 @@ export default props =>
   ) : (
     <SiderMenu {...props} />
   );
+};

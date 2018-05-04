@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import { Form, Button, Divider, Table, Card, Popconfirm } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import ModalBook from './ModalBook';

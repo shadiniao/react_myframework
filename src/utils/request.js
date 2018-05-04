@@ -2,6 +2,7 @@ import fetch from 'dva/fetch';
 import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 import store from '../index';
+// import { getAccessToken } from '../utils/authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -44,7 +45,7 @@ function checkStatus(response) {
  */
 export default function request(url, options) {
   const defaultOptions = {
-    credentials: 'include',
+    // credentials: 'include',
   };
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
@@ -59,26 +60,43 @@ export default function request(url, options) {
       // newOptions.body is FormData
       newOptions.headers = {
         Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
+        // 'Content-Type': 'multipart/form-data',
         ...newOptions.headers,
       };
     }
   }
 
+  // const accessToken = getAccessToken();
+  // if (accessToken) {
+  // 	newOptions.headers = {
+  // 		Authorization: `Bearer ${accessToken}`,
+  // 	};
+  // }
+
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
+      if (response.status === 204) {
         return response.text();
       }
       return response.json();
+    })
+    .then(response => {
+      if (!response || response.code !== 200) {
+        notification.error({
+          message: `系统内部错误`,
+          description: response.msg,
+        });
+      }
+
+      return response;
     })
     .catch(e => {
       const { dispatch } = store;
       const status = e.name;
       if (status === 401) {
         dispatch({
-          type: 'login/logout',
+          type: 'login/mylogout',
         });
         return;
       }
